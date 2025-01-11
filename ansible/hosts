@@ -1,0 +1,11 @@
+[manager]
+192.168.56.10 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/manager/virtualbox/private_key ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
+[sensores]
+192.168.56.21 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_movimiento/virtualbox/private_key
+192.168.56.22 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_luminoso/virtualbox/private_key
+192.168.56.23 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_temperatura/virtualbox/private_key
+
+[camara]
+192.168.56.31 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_1/virtualbox/private_key
+192.168.56.32 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_2/virtualbox/private_key

@@ -1,0 +1,167 @@
+---
+# Paso 1: Instalar apt-transport-https, software-properties-common y wget
+- name: Instalar paquetes necesarios
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - wget
+    state: present
+    update_cache: yes
+  tags: grafana
+
+# Paso 2: Crear el directorio para las claves y agregar la clave de Grafana
+- name: Crear directorio para keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags: grafana
+
+- name: Descargar y agregar clave GPG de Grafana
+  shell: |
+    wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | tee /etc/apt/keyrings/grafana.gpg > /dev/null
+  args:
+    creates: /etc/apt/keyrings/grafana.gpg
+  tags: grafana
+
+# Paso 3: Agregar el repositorio de Grafana
+- name: Agregar repositorio de Grafana
+  copy:
+    content: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main\n"
+    dest: /etc/apt/sources.list.d/grafana.list
+    mode: '0644'
+  tags: grafana
+
+# Paso 4: Actualizar los paquetes disponibles
+- name: Actualizar caché de APT
+  apt:
+    update_cache: yes
+  tags: grafana
+
+# Paso 5: Instalar Grafana
+- name: Instalar Grafana
+  apt:
+    name: grafana
+    state: present
+  tags: grafana
+
+- name: Iniciar servicio
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+  tags: grafana
+
+
+
+# Paso 1: Descargar la clave GPG de InfluxData
+- name: Descargar la clave GPG de InfluxData
+  get_url:
+    url: https://repos.influxdata.com/influxdata-archive.key
+    dest: /tmp/influxdata-archive.key
+    mode: '0644'
+  tags: influxdb
+
+# Paso 2: Verificar la clave descargada con sha256sum
+- name: Verificar la clave GPG con sha256sum
+  shell: |
+    echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  /tmp/influxdata-archive.key" | sha256sum --check
+  tags: influxdb
+
+# Paso 3: Convertir la clave a formato GPG y moverla a trusted.gpg.d
+- name: Convertir la clave GPG a formato dearmor
+  shell: |
+    cat /tmp/influxdata-archive.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  tags: influxdb
+
+# Paso 4: Agregar el repositorio de InfluxData
+- name: Agregar el repositorio de InfluxData
+  copy:
+    content: "deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main\n"
+    dest: /etc/apt/sources.list.d/influxdata.list
+    mode: '0644'
+  tags: influxdb
+
+# Paso 5: Actualizar la lista de paquetes
+- name: Actualizar la lista de paquetes APT
+  apt:
+    update_cache: yes
+  tags: influxdb
+
+# Paso 6: Instalar InfluxDB 2.x
+- name: Instalar InfluxDB 2.x
+  apt:
+    name: influxdb2
+    state: present
+  tags: influxdb
+
+- name: Iniciar servicio
+  service:
+    name: influxdb
+    state: started
+    enabled: yes
+  tags: influxdb
+
+## ========== INSTALAR TELEGRAF ==========
+
+# Paso 1: Descargar la clave GPG de InfluxData
+- name: Descargar la clave GPG de InfluxData
+  get_url:
+    url: https://repos.influxdata.com/influxdata-archive.key
+    dest: /tmp/influxdata-archive.key
+    mode: '0644'
+  tags: telegraf
+
+# Paso 2: Verificar la clave GPG con sha256sum
+- name: Verificar la clave GPG descargada con sha256sum
+  shell: |
+    echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  /tmp/influxdata-archive.key" | sha256sum -c -
+  tags: telegraf
+
+# Paso 3: Convertir la clave GPG a formato dearmor y moverla a trusted.gpg.d
+- name: Convertir clave GPG y moverla a trusted.gpg.d
+  shell: |
+    cat /tmp/influxdata-archive.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  tags: telegraf
+
+# Paso 4: Agregar el repositorio de InfluxData
+- name: Agregar el repositorio de InfluxData
+  copy:
+    content: "deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main\n"
+    dest: /etc/apt/sources.list.d/influxdata.list
+    mode: '0644'
+  tags: telegraf
+
+# Paso 5: Actualizar la lista de paquetes
+- name: Actualizar lista de paquetes APT
+  apt:
+    update_cache: yes
+  tags: telegraf
+
+# Paso 6: Instalar Telegraf
+- name: Instalar Telegraf
+  apt:
+    name: telegraf
+    state: present
+  tags: telegraf
+
+# Paso 7: Copiar el archivo de configuración de Telegraf
+- name: Copiar archivo de configuración de Telegraf
+  ansible.builtin.template:
+    src: influxdb.conf
+    dest: /etc/telegraf/telegraf.d/influxdb.conf
+    mode: '0644'
+  tags: telegraf
+
+# Paso 7: Habilitar y arrancar el servicio de Telegraf
+- name: Habilitar y arrancar Telegraf
+  systemd:
+    name: telegraf
+    enabled: yes
+    state: restarted
+  tags: telegraf

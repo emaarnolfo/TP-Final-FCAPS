@@ -1,0 +1,16 @@
+---
+- name: Configurar sensor de tipo {{ sensor_type }}
+  copy:
+    dest: /etc/snmp/snmpd.conf
+    content: |
+      rocommunity public
+      syslocation "IoT Sensor {{ sensor_type }}"
+      syscontact admin@iot.local
+  notify: Restart SNMP
+
+- name: Habilitar y arrancar SNMP
+  service:
+    name: snmpd
+    state: started
+    enabled: yes
+
