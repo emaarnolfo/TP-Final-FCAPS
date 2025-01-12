@@ -1,0 +1,7 @@
+---
+- name: Restart telegraf
+  systemd:
+    name: telegraf
+    enabled: yes
+    state: restarted
+  tags: telegraf

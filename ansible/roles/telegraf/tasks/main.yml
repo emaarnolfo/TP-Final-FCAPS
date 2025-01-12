@@ -49,10 +49,5 @@
     dest: /etc/telegraf/telegraf.conf
     mode: '0644'
   tags: telegraf
+  notify: Restart telegraf
 
-- name: Habilitar y arrancar Telegraf
-  systemd:
-    name: telegraf
-    enabled: yes
-    state: restarted
-  tags: telegraf

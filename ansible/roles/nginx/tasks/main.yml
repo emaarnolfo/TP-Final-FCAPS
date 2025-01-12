@@ -25,6 +25,7 @@
     dest: /etc/nginx/sites-available/default
     mode: '0644'
   tags: nginx
+  notify: Restart nginx
 
 - name: Habilitar sitio
   file:
@@ -46,3 +47,4 @@
     dest: /etc/telegraf/telegraf.d/nginx.conf
     mode: '0644'
   tags: nginx
+  notify: Restart telegraf

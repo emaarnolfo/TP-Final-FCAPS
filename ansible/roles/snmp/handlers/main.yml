@@ -1,0 +1,14 @@
+---
+- name: Restart SNMP 
+  systemd:
+    name: snmpd
+    enabled: yes
+    state: restarted
+  tags: snmp
+
+- name: Restart telegraf
+  systemd:
+    name: telegraf
+    enabled: yes
+    state: restarted
+  tags: telegraf

@@ -1,0 +1,14 @@
+---
+- name: Restart nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: restarted
+  tags: nginx
+
+- name: Restart telegraf
+  systemd:
+    name: telegraf
+    enabled: yes
+    state: restarted
+  tags: telegraf

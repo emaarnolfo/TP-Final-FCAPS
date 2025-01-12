@@ -10,10 +10,13 @@
     dest: /etc/snmp/snmpd.conf
     mode: '0644'
   tags: snmp
+  notify: Restart SNMP
 
-- name: Habilitar y arrancar SNMP 
-  systemd:
-    name: snmpd
-    enabled: yes
-    state: restarted
+- name: Copiar el archivo de input de SNMP en telegraf
+  ansible.builtin.template:
+    src: snmpd_telegraf.conf
+    dest: /etc/telegraf/telegra.d/snmpd.conf
+    mode: '0644'
   tags: snmp
+  notify: Restart telegraf
+
