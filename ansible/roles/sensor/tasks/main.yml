@@ -1,16 +1,78 @@
 ---
-- name: Configurar sensor de tipo {{ sensor_type }}
+## ========== INSTALAR TELEGRAF ==========
+# Paso 1: Descargar la clave GPG de InfluxData
+- name: Descargar la clave GPG de InfluxData
+  get_url:
+    url: https://repos.influxdata.com/influxdata-archive.key
+    dest: /tmp/influxdata-archive.key
+    mode: '0644'
+  tags: telegraf
+
+# Paso 2: Verificar la clave GPG con sha256sum
+- name: Verificar la clave GPG descargada con sha256sum
+  shell: |
+    echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  /tmp/influxdata-archive.key" | sha256sum -c -
+  tags: telegraf
+
+# Paso 3: Convertir la clave GPG a formato dearmor y moverla a trusted.gpg.d
+- name: Convertir clave GPG y moverla a trusted.gpg.d
+  shell: |
+    cat /tmp/influxdata-archive.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  tags: telegraf
+
+# Paso 4: Agregar el repositorio de InfluxData
+- name: Agregar el repositorio de InfluxData
   copy:
+    content: "deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main\n"
+    dest: /etc/apt/sources.list.d/influxdata.list
+    mode: '0644'
+  tags: telegraf
+
+# Paso 5: Actualizar la lista de paquetes
+- name: Actualizar lista de paquetes APT
+  apt:
+    update_cache: yes
+  tags: telegraf
+
+# Paso 6: Instalar Telegraf
+- name: Instalar Telegraf
+  apt:
+    name: telegraf
+    state: present
+  tags: telegraf
+
+# Paso 7: Copiar el archivo de configuración de Telegraf
+- name: Copiar archivo de configuración de Telegraf
+  ansible.builtin.template:
+    src: influxdb.conf
+    dest: /etc/telegraf/telegraf.d/influxdb.conf
+    mode: '0644'
+  tags: telegraf
+
+- name: Descargar las mibs en el sistema
+  shell: |
+    apt-get install snmp-mibs-downloader -y
+  tags: snmp
+
+- name: Copiar el archivo de configuración de SNMP
+  ansible.builtin.template:
+    src: snmpd.conf
     dest: /etc/snmp/snmpd.conf
-    content: |
-      rocommunity public
-      syslocation "IoT Sensor {{ sensor_type }}"
-      syscontact admin@iot.local
-  notify: Restart SNMP
+    mode: '0644'
+  tags: snmp
 
-- name: Habilitar y arrancar SNMP
-  service:
+- name: Habilitar y arrancar SNMP 
+  systemd:
     name: snmpd
-    state: started
     enabled: yes
+    state: restarted
+  tags: snmp
 
+- name: Habilitar y arrancar Telegraf
+  systemd:
+    name: telegraf
+    enabled: yes
+    state: restarted
+  tags: telegraf

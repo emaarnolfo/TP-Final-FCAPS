@@ -1,6 +1,6 @@
 ---
-- name: Configuración de la red IoT
-  hosts: all
+- name: Configuración de la red IoT en el host manager
+  hosts: manager
   become: yes
   vars:
     influxdb_version: "1.8.10"
@@ -9,7 +9,25 @@
     - name: Actualizar paquetes
       apt:
         update_cache: yes
-        upgrade: dist
+
+    - name: Instalar paquetes básicos
+      apt:
+        name:
+          - snmp
+          - snmpd
+        state: present
+  roles: 
+    - manager
+
+
+- name: Configuración de la red IoT en los sensores
+  hosts: sensores
+  become: yes
+
+  pre_tasks:
+    - name: Actualizar paquetes
+      apt:
+        update_cache: yes
 
     - name: Instalar paquetes básicos
       apt:
@@ -19,7 +37,5 @@
         state: present
 
   roles:
-    - manager
-    #- sensor
+    - sensor
     #- camera
-
