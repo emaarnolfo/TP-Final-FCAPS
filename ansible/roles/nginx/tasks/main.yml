@@ -1,0 +1,48 @@
+--- 
+- name: Crear carpeta si no existe
+  file:
+    path: /var/www/html
+    state: directory
+    mode: '0755'
+  tags: nginx
+
+- name: Copiar pagina web
+  ansible.builtin.template:
+    src: index.html
+    dest: /var/www/html/index.html
+    mode: '0644'
+  tags: nginx
+
+- name: Instalar nginx
+  apt:
+    name: nginx
+    state: present
+  tags: nginx
+
+- name: Copiar archivo de configuración
+  ansible.builtin.template:
+    src: default
+    dest: /etc/nginx/sites-available/default
+    mode: '0644'
+  tags: nginx
+
+- name: Habilitar sitio
+  file:
+    src: /etc/nginx/sites-available/default
+    dest: /etc/nginx/sites-enabled/default
+    state: link
+  tags: nginx
+
+- name: Iniciar servicio
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  tags: nginx
+
+- name: Agregar plugin de telegraf para monitorizacion
+  ansible.builtin.template:
+    src: nginx.conf
+    dest: /etc/telegraf/telegraf.d/nginx.conf
+    mode: '0644'
+  tags: nginx

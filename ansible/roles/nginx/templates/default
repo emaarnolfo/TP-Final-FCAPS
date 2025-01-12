@@ -1,0 +1,21 @@
+server {
+    listen 80;
+    server_name localhost;
+
+    root /var/www/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Endpoint para server_status
+    location /server_status {
+        stub_status;
+        allow all; # Permite el acceso desde localhost
+    }
+
+    # Opcional: Logs para depuración
+    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+}

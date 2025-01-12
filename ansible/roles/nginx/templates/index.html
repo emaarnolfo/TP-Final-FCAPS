@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel - IoT System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 800px;
+            margin: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .section {
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #fafafa;
+        }
+
+        .section h2 {
+            margin-bottom: 15px;
+        }
+
+        .section button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+
+        .section button:hover {
+            background-color: #45a049;
+        }
+
+        .video {
+            width: 100%;
+            height: 150px;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control Panel - IoT System</h1>
+    <div class="container">
+        <!-- Section for controlling the blinds -->
+        <div class="section">
+            <h2>Blinds Control</h2>
+            <button onclick="sendCommand('blinds', 'up')">Raise Blinds</button>
+            <button onclick="sendCommand('blinds', 'down')">Lower Blinds</button>
+        </div>
+
+        <!-- Section for controlling the lights -->
+        <div class="section">
+            <h2>Lights Control</h2>
+            <button onclick="sendCommand('light1', 'on')">Turn On Light 1</button>
+            <button onclick="sendCommand('light1', 'off')">Turn Off Light 1</button>
+            <button onclick="sendCommand('light2', 'on')">Turn On Light 2</button>
+            <button onclick="sendCommand('light2', 'off')">Turn Off Light 2</button>
+        </div>
+
+        <!-- Section for camera feed 1 -->
+        <div class="section">
+            <h2>Camera 1</h2>
+            <div class="video">Live Feed: Camera 1</div>
+        </div>
+
+        <!-- Section for camera feed 2 -->
+        <div class="section">
+            <h2>Camera 2</h2>
+            <div class="video">Live Feed: Camera 2</div>
+        </div>
+    </div>
+
+    <script>
+        function sendCommand(device, action) {
+            alert(`Sending command: ${action} to ${device}`);
+            // Placeholder for actual communication logic with sensors/actuators
+        }
+    </script>
+</body>
+</html>

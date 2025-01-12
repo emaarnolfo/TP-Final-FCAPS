@@ -35,8 +35,8 @@
     update_cache: yes
   tags: influxdb
 
-# Paso 6: Instalar InfluxDB 2.x
-- name: Instalar InfluxDB 2.x
+# Paso 6: Instalar InfluxDB 2
+- name: Instalar InfluxDB 2
   apt:
     name: influxdb2
     state: present

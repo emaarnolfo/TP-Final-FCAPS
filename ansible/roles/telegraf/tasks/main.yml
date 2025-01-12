@@ -50,7 +50,6 @@
     mode: '0644'
   tags: telegraf
 
-# Paso 7: Habilitar y arrancar el servicio de Telegraf
 - name: Habilitar y arrancar Telegraf
   systemd:
     name: telegraf

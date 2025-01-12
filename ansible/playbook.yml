@@ -20,6 +20,7 @@
     - grafana
     - influxdb
     - telegraf
+    - nginx
 
 
 - name: Configuración de la red IoT en los sensores
