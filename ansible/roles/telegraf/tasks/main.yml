@@ -1,5 +1,4 @@
 ---
-## ========== INSTALAR TELEGRAF ==========
 # Paso 1: Descargar la clave GPG de InfluxData
 - name: Descargar la clave GPG de InfluxData
   get_url:
@@ -46,30 +45,12 @@
 # Paso 7: Copiar el archivo de configuración de Telegraf
 - name: Copiar archivo de configuración de Telegraf
   ansible.builtin.template:
-    src: influxdb.conf
-    dest: /etc/telegraf/telegraf.d/influxdb.conf
+    src: telegraf.conf
+    dest: /etc/telegraf/telegraf.conf
     mode: '0644'
   tags: telegraf
 
-- name: Descargar las mibs en el sistema
-  shell: |
-    apt-get install snmp-mibs-downloader -y
-  tags: snmp
-
-- name: Copiar el archivo de configuración de SNMP
-  ansible.builtin.template:
-    src: snmpd.conf
-    dest: /etc/snmp/snmpd.conf
-    mode: '0644'
-  tags: snmp
-
-- name: Habilitar y arrancar SNMP 
-  systemd:
-    name: snmpd
-    enabled: yes
-    state: restarted
-  tags: snmp
-
+# Paso 7: Habilitar y arrancar el servicio de Telegraf
 - name: Habilitar y arrancar Telegraf
   systemd:
     name: telegraf

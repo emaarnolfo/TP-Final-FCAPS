@@ -1,0 +1,50 @@
+---
+# Paso 1: Descargar la clave GPG de InfluxData
+- name: Descargar la clave GPG de InfluxData
+  get_url:
+    url: https://repos.influxdata.com/influxdata-archive.key
+    dest: /tmp/influxdata-archive.key
+    mode: '0644'
+  tags: influxdb
+
+# Paso 2: Verificar la clave descargada con sha256sum
+- name: Verificar la clave GPG con sha256sum
+  shell: |
+    echo "943666881a1b8d9b849b74caebf02d3465d6beb716510d86a39f6c8e8dac7515  /tmp/influxdata-archive.key" | sha256sum --check
+  tags: influxdb
+
+# Paso 3: Convertir la clave a formato GPG y moverla a trusted.gpg.d
+- name: Convertir la clave GPG a formato dearmor
+  shell: |
+    cat /tmp/influxdata-archive.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  args:
+    creates: /etc/apt/trusted.gpg.d/influxdata-archive.gpg
+  tags: influxdb
+
+# Paso 4: Agregar el repositorio de InfluxData
+- name: Agregar el repositorio de InfluxData
+  copy:
+    content: "deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main\n"
+    dest: /etc/apt/sources.list.d/influxdata.list
+    mode: '0644'
+  tags: influxdb
+
+# Paso 5: Actualizar la lista de paquetes
+- name: Actualizar la lista de paquetes APT
+  apt:
+    update_cache: yes
+  tags: influxdb
+
+# Paso 6: Instalar InfluxDB 2.x
+- name: Instalar InfluxDB 2.x
+  apt:
+    name: influxdb2
+    state: present
+  tags: influxdb
+
+- name: Iniciar servicio
+  service:
+    name: influxdb
+    state: started
+    enabled: yes
+  tags: influxdb

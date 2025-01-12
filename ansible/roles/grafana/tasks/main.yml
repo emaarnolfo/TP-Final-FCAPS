@@ -1,0 +1,54 @@
+---
+# Paso 1: Instalar apt-transport-https, software-properties-common y wget
+- name: Instalar paquetes necesarios
+  apt:
+    name:
+      - apt-transport-https
+      - software-properties-common
+      - wget
+    state: present
+    update_cache: yes
+  tags: grafana
+
+# Paso 2: Crear el directorio para las claves y agregar la clave de Grafana
+- name: Crear directorio para keyrings
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags: grafana
+
+- name: Descargar y agregar clave GPG de Grafana
+  shell: |
+    wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | tee /etc/apt/keyrings/grafana.gpg > /dev/null
+  args:
+    creates: /etc/apt/keyrings/grafana.gpg
+  tags: grafana
+
+# Paso 3: Agregar el repositorio de Grafana
+- name: Agregar repositorio de Grafana
+  copy:
+    content: "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main\n"
+    dest: /etc/apt/sources.list.d/grafana.list
+    mode: '0644'
+  tags: grafana
+
+# Paso 4: Actualizar los paquetes disponibles
+- name: Actualizar caché de APT
+  apt:
+    update_cache: yes
+  tags: grafana
+
+# Paso 5: Instalar Grafana
+- name: Instalar Grafana
+  apt:
+    name: grafana
+    state: present
+  tags: grafana
+
+- name: Iniciar servicio
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
+  tags: grafana

@@ -1,11 +1,11 @@
 [manager]
-192.168.56.10 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/manager/virtualbox/private_key ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+192.168.56.10 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/manager/virtualbox/private_key ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=manager var_bucket=system
 
 [sensores]
-192.168.56.21 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_movimiento/virtualbox/private_key   ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_movimiento
-192.168.56.22 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_luminoso/virtualbox/private_key     ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_luminoso
-192.168.56.23 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_temperatura/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_temperatura
+192.168.56.21 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_movimiento/virtualbox/private_key   ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_movimiento    var_bucket=sensores  
+192.168.56.22 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_luminoso/virtualbox/private_key     ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_luminoso      var_bucket=sensores
+#192.168.56.23 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/sensor_temperatura/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=sensor_temperatura   var_bucket=sensores
 
 [camara]
-192.168.56.31 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_1/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=camara_1
-192.168.56.32 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_2/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=camara_2
+192.168.56.31 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_1/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=camara_1 var_bucket=camaras
+192.168.56.32 ansible_user=vagrant ansible_ssh_private_key_file=../.vagrant/machines/camara_2/virtualbox/private_key  ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null' var_hostname=camara_2 var_bucket=camaras

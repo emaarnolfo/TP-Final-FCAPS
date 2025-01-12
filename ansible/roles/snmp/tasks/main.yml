@@ -1,0 +1,19 @@
+---
+- name: Descargar las mibs en el sistema
+  shell: |
+    apt-get install snmp-mibs-downloader -y
+  tags: snmp
+
+- name: Copiar el archivo de configuración de SNMP
+  ansible.builtin.template:
+    src: snmpd.conf
+    dest: /etc/snmp/snmpd.conf
+    mode: '0644'
+  tags: snmp
+
+- name: Habilitar y arrancar SNMP 
+  systemd:
+    name: snmpd
+    enabled: yes
+    state: restarted
+  tags: snmp
