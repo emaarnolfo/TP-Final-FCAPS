@@ -21,7 +21,7 @@
 
 
 - name: Configuración de la red IoT en los sensores
-  hosts: sensores
+  hosts: camara
   become: yes
 
   pre_tasks:
